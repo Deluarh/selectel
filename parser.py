@@ -4,7 +4,7 @@ import json
 import datetime as DT
 
 import bs4
-
+import requests
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
@@ -92,3 +92,5 @@ if __name__ == "__main__":
     time.sleep(3)
     driver.automatically_send_data()
     driver.close()
+    requests.post('http://127.0.0.1:5000/send', json={'mail':sys.argv[3]}
+                             )
