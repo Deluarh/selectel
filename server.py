@@ -4,6 +4,7 @@ import requests
 from flask import Flask, request
 from mail import login
 from parser import ticketsParser
+
 app = Flask(__name__)
 
 
@@ -13,22 +14,22 @@ def data_to_str(data):
     text = data['ticket_text']
     time = DT.datetime.fromtimestamp(data['ticket_date']).strftime('%d.%m.%Y %H:%M')
     id = data['ticket_id']
-    return f'''статус тикета: {status} <br> ссылка на тикет: {link} <br> текст тикета:  {text} <br>  время тикета:  {time} <br>  id тикета: {id}'''
+    return f'статус тикета: {status} <br> ссылка на тикет: {link} <br> текст тикета:  {text} <br>  время тикета:  {time} <br>  id тикета: {id}'
 
 
-def calc_desired_ticket(data, index= -2):
+def calc_desired_ticket(data, index=-2):
     sort = [(i, int(data[i]['ticket_date'])) for i in range(0, len(data))]
     sort.sort(key=lambda i: i[1])
     return data[sort[index][0]]
 
 
 def last_ticket():
-
     templates = []
     with open('data.json') as f:
         templates = json.loads(f.read())
         print(templates)
         return calc_desired_ticket(templates, -2)
+
 
 form = '''<br><br><form action="/send" method="post">
     <label for="say">отправка почты на адрес:</label>
@@ -40,6 +41,7 @@ form = '''<br><br><form action="/send" method="post">
 @app.route("/")
 def show_ticket():
     return data_to_str(last_ticket()) + form
+
 
 @app.route('/send', methods=['POST'])
 def send_email(text=data_to_str(last_ticket())):
@@ -58,14 +60,15 @@ def send_email(text=data_to_str(last_ticket())):
     try:
         sender(mail, text, False)
     except Exception as e:
-        print(e) 
+        print(e)
         return {'OK': False}
     else:
         return {'OK': True}
 
+
 @app.route('/update')
 def update_tickers_list():
-    driver.automatically_send_data
+    return {'OK': driver.automatically_send_data()}
 
 
 if __name__ == "__main__":
@@ -75,7 +78,6 @@ if __name__ == "__main__":
     username = data['mail_username']
     password = data['mail_password']
 
-    
     client_login = data['selectel_login']
     client_password = data['selectel_password']
     try:

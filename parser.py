@@ -97,7 +97,7 @@ class ticketsParser():
 
     def automatically_send_data(self):
         data = self.extract_data(self.driver.page_source)
-        if not data:
+        if data:
             self.send_data(data)
             return True
         return False
@@ -109,4 +109,4 @@ if __name__ == "__main__":
     time.sleep(3)
     driver.automatically_send_data()
     driver.close()
-    requests.post('http://127.0.0.1:5000/send', json={'mail': sys.argv[3]})
+    #requests.post('http://127.0.0.1:5000/send', json={'mail': sys.argv[3]})
