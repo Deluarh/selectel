@@ -28,7 +28,7 @@ def send_mail():
 @app.route('/parser', methods=['POST'])
 def parser():
     global driver
-    driver.automatically_send_data()
+    driver.automatically_send_data
 
 
 @app.route('/control_servise', methods=['POST'])

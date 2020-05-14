@@ -65,7 +65,8 @@ def send_email(text=data_to_str(last_ticket())):
 
 @app.route('/update')
 def update_tickers_list():
-    driver.automatically_send_data()
+    driver.automatically_send_data
+
 
 if __name__ == "__main__":
     data = None
