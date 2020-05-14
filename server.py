@@ -1,4 +1,3 @@
-from flask import Flask
 import json
 import datetime as DT
 import requests
@@ -6,6 +5,7 @@ from flask import Flask, request
 from mail import login
 from parser import ticketsParser
 app = Flask(__name__)
+
 
 def data_to_str(data):
     status = data['ticket_status']
@@ -15,24 +15,28 @@ def data_to_str(data):
     id = data['ticket_id']
     return f'''статус тикета: {status} <br> ссылка на тикет: {link} <br> текст тикета:  {text} <br>  время тикета:  {time} <br>  id тикета: {id}'''
 
+
 def calc_desired_ticket(data, index= -2):
-    sort = [(i, int(data[i]['ticket_date'])) for i in range(0,len(data))]
+    sort = [(i, int(data[i]['ticket_date'])) for i in range(0, len(data))]
     sort.sort(key=lambda i: i[1])
     return data[sort[index][0]]
+
+
 def last_ticket():
 
     templates = []
     with open('data.json') as f:
         templates = json.loads(f.read())
         print(templates)
-        return calc_desired_ticket(templates, -2)    
-    return False
+        return calc_desired_ticket(templates, -2)
 
 form = '''<br><br><form action="/send" method="post">
     <label for="say">отправка почты на адрес:</label>
     <input name="mail"  value="mail получателя тикета">
     <button>отправить</button>
 </form><br><br><a href="/update">обновить тикеты</a>'''
+
+
 @app.route("/")
 def show_ticket():
     return data_to_str(last_ticket()) + form
@@ -50,9 +54,7 @@ def send_email(text=data_to_str(last_ticket())):
         mail = request.form.get('mail')
     if not isinstance(mail, str) or len(text) == 0:
         return {'OK': False}
-    
-    if text == '/status':
-        return status()
+
     try:
         sender(mail, text, False)
     except Exception as e:
