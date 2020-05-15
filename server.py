@@ -43,6 +43,7 @@ def get_ticket(index=1):
 form = '''<br><br><form action="/send" method="post">
     <label for="say">отправка почты на адрес:</label>
     <input name="mail"  value="mail получателя тикета">
+    <input name="block" type="hidden" value="">
     <button>отправить</button>
 </form><br><br><a href="/update">обновить тикеты</a>'''
 
@@ -55,19 +56,34 @@ def show_ticket():
 @app.route('/send', methods=['POST'])
 def send_email(text=get_ticket()):
     """
-    JSON {"mail": str}
+    JSON {"mail": str, "block": bool}
     :return: {'OK': bool}
     """
-    print(request)
+    with open("pass.json", "r") as read_file:
+        data = json.load(read_file)
+    username = data['mail_username']
+    password = data['mail_password']
+
+    try:
+        sender = login(username, password)
+    except Exception as e:
+        return {'OK': 'auth error'}
+
     try:
         mail = request.json["mail"]
+        block = request.json["block"]
     except TypeError as e:
         mail = request.form.get('mail')
+        block = request.form.get('block')
+
+    if block:
+        return {'email отправлен ранее'}
+
     if not isinstance(mail, str) or len(text) == 0:
         return {'OK': False}
 
     try:
-        sender(mail, text, False)
+        sender(mail, text, True)
     except Exception as e:
         print(e)
         return {'OK': False}
@@ -92,16 +108,3 @@ def update_tickers_list():
 
 if __name__ == "__main__":
     app.run()
-    '''
-    data = None
-    with open("pass.json", "r") as read_file:
-        data = json.load(read_file)
-    username = data['mail_username']
-    password = data['mail_password']
-
-    try:
-        sender = login(username, password)
-        app.run()
-    except Exception as e:
-        print(e)
-'''

@@ -125,4 +125,4 @@ if __name__ == "__main__":
     driver.auth(sys.argv[1], sys.argv[2])
     driver.automatically_send_data()
     driver.close()
-    requests.post('http://127.0.0.1:5000/send', json={'mail': sys.argv[3]})
+    requests.post('http://127.0.0.1:5000/send', json={'mail': sys.argv[3], "block": True})
