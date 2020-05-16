@@ -9,17 +9,15 @@ def login(username, password):
     server.login(username, password)
 
     def send_mail(mail_receiver, text, quit=True):
-        SUBJECT = "задание на стажировку"
-
         nonlocal username
         nonlocal server
         if quit:
             server.quit()
             print('server mail quit')
             return True
-
+        subject = "задание на стажировку"
         msg = MIMEText(text, 'plain', 'utf-8')
-        msg['Subject'] = Header(SUBJECT, 'utf-8')
+        msg['Subject'] = Header(subject, 'utf-8')
         msg['From'] = username
         msg['To'] = mail_receiver
         server.sendmail(username, [mail_receiver], msg.as_string())

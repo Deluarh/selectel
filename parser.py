@@ -37,6 +37,8 @@ class ticketsParser():
         chrome_options = Options()
         chrome_options.add_argument("--headless")
         chrome_options.add_argument("--window-size=%s" % WINDOW_SIZE)
+        chrome_options.add_argument('--no-sandbox')
+        chrome_options.add_argument('--disable-dev-shm-usage')
         chrome_options.binary_location = CHROME_PATH
 
         try:
@@ -95,17 +97,11 @@ class ticketsParser():
     def send_data(self, data):
         sent_tickets = dataController.get_sent_tickets()
         if sent_tickets:
-            sent_tickets_tuple_list = []
-            for ticket in sent_tickets:
-                time = ticket['ticket_date']
-                id = ticket['ticket_id']
-                sent_tickets_tuple_list.append((time, id))
-
+            sent_tickets_tuple_list = list(map(lambda i: (i['ticket_date'], i['ticket_id']), sent_tickets))
             for i in range(0, len(data)):
                 cort = (data[i]['ticket_date'], data[i]['ticket_id'])
                 if cort in sent_tickets_tuple_list:
                     data[i]['notification'] = True
-
         dataController.clear_table()
         dataController.write_tickets(data)
 
